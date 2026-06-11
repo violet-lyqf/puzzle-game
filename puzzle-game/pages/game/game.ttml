@@ -1,0 +1,94 @@
+<view class="game-container">
+
+  <!-- 顶部信息栏 -->
+  <view class="top-bar">
+    <view class="top-item" bindtap="goBack">
+      <text class="back-btn">← 返回</text>
+    </view>
+    <view class="top-item center">
+      <text class="level-text">第 {{level}} 关</text>
+    </view>
+    <view class="top-item right">
+      <text class="score-text">⭐ {{totalScore}}</text>
+    </view>
+  </view>
+
+  <!-- 计时器 + 操作栏 -->
+  <view class="info-bar">
+    <view class="timer-box">
+      <text class="timer-icon">⏱</text>
+      <text class="timer-text">{{timeStr}}</text>
+    </view>
+    <view class="moves-box">
+      <text class="moves-icon">🔀</text>
+      <text class="moves-text">{{moves}} 步</text>
+    </view>
+    <button class="btn-shuffle" bindtap="shufflePieces">🔀 重排</button>
+    <button class="btn-preview" bindtap="togglePreview">👁 预览</button>
+  </view>
+
+  <!-- 参考图预览（弹层） -->
+  <view class="preview-modal {{showPreview ? 'show' : ''}}" bindtap="togglePreview">
+    <view class="preview-box" catchtap="preventClose">
+      <text class="preview-title">参考图</text>
+      <image class="preview-image" src="{{currentImage}}" mode="aspectFit"/>
+      <button class="btn-close-preview" bindtap="togglePreview">关闭</button>
+    </view>
+  </view>
+
+  <!-- 拼图棋盘 -->
+  <view class="board-wrapper">
+    <view
+      class="puzzle-board"
+      style="width:{{boardSize}}px; height:{{boardSize}}px;"
+    >
+      <block tt:for="{{pieces}}" tt:key="id">
+        <view
+          class="puzzle-piece {{item.selected ? 'piece-selected' : ''}} {{item.correct ? 'piece-correct' : ''}}"
+          style="width:{{pieceSize}}px; height:{{pieceSize}}px; left:{{item.col * pieceSize}}px; top:{{item.row * pieceSize}}px; background-image:url('{{currentImage}}'); background-size:{{boardSize}}px {{boardSize}}px; background-position:-{{item.correctCol * pieceSize}}px -{{item.correctRow * pieceSize}}px;"
+          bindtap="onPieceTap"
+          data-id="{{item.id}}"
+        >
+          <view class="piece-border {{item.correct ? 'border-correct' : ''}}"/>
+          <text tt:if="{{showNumbers}}" class="piece-number">{{item.id + 1}}</text>
+        </view>
+      </block>
+    </view>
+  </view>
+
+  <!-- 底部按钮 -->
+  <view class="bottom-bar">
+    <button class="btn-hint" bindtap="toggleNumbers">
+      {{showNumbers ? '🙈 隐藏编号' : '🔢 显示编号'}}
+    </button>
+  </view>
+
+  <!-- 成功弹窗 -->
+  <view class="success-modal {{showSuccess ? 'show' : ''}}">
+    <view class="success-box">
+      <text class="success-emoji">🎉</text>
+      <text class="success-title">拼图成功！</text>
+      <view class="success-stats">
+        <view class="stat-item">
+          <text class="stat-value">+10</text>
+          <text class="stat-label">本关积分</text>
+        </view>
+        <view class="stat-divider"/>
+        <view class="stat-item">
+          <text class="stat-value">{{totalScore}}</text>
+          <text class="stat-label">总积分</text>
+        </view>
+        <view class="stat-divider"/>
+        <view class="stat-item">
+          <text class="stat-value">{{timeStr}}</text>
+          <text class="stat-label">用时</text>
+        </view>
+      </view>
+      <view class="success-btns">
+        <button class="btn-next" bindtap="nextLevel">下一关 →</button>
+        <button class="btn-home" bindtap="goHome">返回首页</button>
+      </view>
+    </view>
+  </view>
+
+</view>

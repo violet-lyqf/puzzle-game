@@ -1,0 +1,331 @@
+.game-container {
+  min-height: 100vh;
+  background: linear-gradient(160deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-bottom: 40rpx;
+}
+
+/* ─── 顶部信息栏 ─── */
+.top-bar {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20rpx 30rpx;
+  background: rgba(0,0,0,0.3);
+  border-bottom: 1rpx solid rgba(255,255,255,0.08);
+}
+
+.top-item {
+  flex: 1;
+}
+
+.top-item.center {
+  text-align: center;
+}
+
+.top-item.right {
+  text-align: right;
+}
+
+.back-btn {
+  font-size: 28rpx;
+  color: #a8b2d8;
+}
+
+.level-text {
+  font-size: 34rpx;
+  font-weight: bold;
+  color: #ffffff;
+}
+
+.score-text {
+  font-size: 30rpx;
+  color: #f5a623;
+  font-weight: bold;
+}
+
+/* ─── 信息栏 ─── */
+.info-bar {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18rpx 30rpx;
+  background: rgba(255,255,255,0.04);
+  border-bottom: 1rpx solid rgba(255,255,255,0.06);
+}
+
+.timer-box,
+.moves-box {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 8rpx;
+}
+
+.timer-icon,
+.moves-icon {
+  font-size: 28rpx;
+}
+
+.timer-text,
+.moves-text {
+  font-size: 28rpx;
+  color: #cdd6f4;
+  font-weight: bold;
+}
+
+.btn-shuffle,
+.btn-preview {
+  height: 60rpx;
+  padding: 0 24rpx;
+  font-size: 24rpx;
+  border-radius: 30rpx;
+  border: 1rpx solid rgba(255,255,255,0.2);
+  background: rgba(255,255,255,0.08);
+  color: #f5f5f5;
+  line-height: 60rpx;
+}
+
+/* ─── 预览弹层 ─── */
+.preview-modal {
+  display: none;
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.75);
+  z-index: 100;
+  justify-content: center;
+  align-items: center;
+}
+
+.preview-modal.show {
+  display: flex;
+}
+
+.preview-box {
+  width: 80%;
+  background: #1e2a3a;
+  border-radius: 32rpx;
+  padding: 40rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border: 1rpx solid rgba(255,255,255,0.15);
+}
+
+.preview-title {
+  font-size: 32rpx;
+  color: #f5a623;
+  font-weight: bold;
+  margin-bottom: 24rpx;
+}
+
+.preview-image {
+  width: 100%;
+  height: 400rpx;
+  border-radius: 16rpx;
+  margin-bottom: 30rpx;
+}
+
+.btn-close-preview {
+  width: 200rpx;
+  height: 72rpx;
+  background: #e94560;
+  color: white;
+  font-size: 28rpx;
+  border-radius: 36rpx;
+  border: none;
+}
+
+/* ─── 拼图棋盘 ─── */
+.board-wrapper {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 30rpx 0;
+}
+
+.puzzle-board {
+  position: relative;
+  border-radius: 12rpx;
+  overflow: hidden;
+  box-shadow: 0 20rpx 60rpx rgba(0,0,0,0.6);
+  border: 2rpx solid rgba(255,255,255,0.1);
+}
+
+/* ─── 拼图切片 ─── */
+.puzzle-piece {
+  position: absolute;
+  background-repeat: no-repeat;
+  transition: left 0.2s ease, top 0.2s ease, box-shadow 0.15s ease;
+  cursor: pointer;
+  box-sizing: border-box;
+}
+
+.piece-border {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  border: 1rpx solid rgba(255,255,255,0.25);
+  pointer-events: none;
+  transition: border-color 0.2s;
+}
+
+.piece-selected .piece-border {
+  border: 4rpx solid #e94560;
+  box-shadow: inset 0 0 0 2rpx rgba(233,69,96,0.4);
+}
+
+.piece-correct .piece-border {
+  border-color: rgba(0,255,128,0.0);
+}
+
+.border-correct {
+  border-color: rgba(0,255,128,0.0) !important;
+}
+
+.piece-selected {
+  z-index: 10;
+  transform: scale(1.04);
+  box-shadow: 0 8rpx 24rpx rgba(233,69,96,0.5);
+}
+
+.piece-number {
+  position: absolute;
+  bottom: 4rpx;
+  right: 6rpx;
+  font-size: 20rpx;
+  color: rgba(255,255,255,0.85);
+  text-shadow: 0 1rpx 4rpx rgba(0,0,0,0.8);
+  pointer-events: none;
+  font-weight: bold;
+}
+
+/* ─── 底部栏 ─── */
+.bottom-bar {
+  width: 100%;
+  padding: 0 40rpx;
+  display: flex;
+  justify-content: center;
+}
+
+.btn-hint {
+  height: 80rpx;
+  padding: 0 48rpx;
+  background: rgba(255,255,255,0.08);
+  color: #a8b2d8;
+  font-size: 28rpx;
+  border-radius: 40rpx;
+  border: 1rpx solid rgba(255,255,255,0.15);
+}
+
+/* ─── 成功弹窗 ─── */
+.success-modal {
+  display: none;
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.8);
+  z-index: 200;
+  justify-content: center;
+  align-items: center;
+}
+
+.success-modal.show {
+  display: flex;
+}
+
+.success-box {
+  width: 85%;
+  background: linear-gradient(145deg, #1e2a3a, #162030);
+  border-radius: 40rpx;
+  padding: 60rpx 40rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border: 1rpx solid rgba(255,255,255,0.15);
+  box-shadow: 0 30rpx 80rpx rgba(0,0,0,0.7);
+}
+
+.success-emoji {
+  font-size: 100rpx;
+  margin-bottom: 20rpx;
+}
+
+.success-title {
+  font-size: 56rpx;
+  font-weight: bold;
+  color: #ffffff;
+  margin-bottom: 50rpx;
+  text-shadow: 0 0 30rpx rgba(233,69,96,0.6);
+}
+
+.success-stats {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: center;
+  background: rgba(255,255,255,0.05);
+  border-radius: 24rpx;
+  padding: 36rpx 20rpx;
+  margin-bottom: 50rpx;
+}
+
+.stat-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10rpx;
+}
+
+.stat-value {
+  font-size: 44rpx;
+  font-weight: bold;
+  color: #f5a623;
+}
+
+.stat-label {
+  font-size: 24rpx;
+  color: #a8b2d8;
+}
+
+.stat-divider {
+  width: 2rpx;
+  height: 80rpx;
+  background: rgba(255,255,255,0.1);
+}
+
+.success-btns {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 24rpx;
+}
+
+.btn-next {
+  width: 100%;
+  height: 96rpx;
+  background: linear-gradient(135deg, #e94560, #c23152);
+  color: white;
+  font-size: 34rpx;
+  font-weight: bold;
+  border-radius: 48rpx;
+  border: none;
+  box-shadow: 0 10rpx 30rpx rgba(233,69,96,0.4);
+  letter-spacing: 2rpx;
+}
+
+.btn-home {
+  width: 100%;
+  height: 88rpx;
+  background: rgba(255,255,255,0.08);
+  color: #a8b2d8;
+  font-size: 30rpx;
+  border-radius: 44rpx;
+  border: 1rpx solid rgba(255,255,255,0.15);
+}
