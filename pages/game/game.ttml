@@ -1,4 +1,4 @@
-﻿<view class="game-container">
+﻿<view class="game-container" catchtouchmove="preventScroll" catchtouchstart="preventScroll">
 
   <!-- 顶部信息栏 -->
   <view class="top-bar">
@@ -38,19 +38,30 @@
 
   <!-- 拼图棋盘 -->
   <view class="board-wrapper">
-    <view class="puzzle-board"
-    style="width:{{boardSize}}px; height:{{boardHeight}}px;"
+    <view
+      class="puzzle-board"
+      style="width:{{boardSize}}px; height:{{boardHeight}}px;"
+      catchtouchmove="onBoardTouchMove"
     >
     <block tt:for="{{pieces}}" tt:key="id">
       <view
-        class="puzzle-piece {{item.selected ? 'piece-selected' : ''}} {{item.correct ? 'piece-correct' : ''}}"
-        style="width:{{pieceSize}}px; height:{{pieceSizeH}}px; left:{{item.col * pieceSize}}px; top:{{item.row * pieceSizeH}}px; background-image:url('{{currentImage}}'); background-size:{{boardSize}}px {{boardHeight}}px; background-position:-{{item.correctCol * pieceSize}}px -{{item.correctRow * pieceSizeH}}px;"
-          bindtap="onPieceTap"
-          data-id="{{item.id}}"
-        >
-          <view class="piece-border {{item.correct ? 'border-correct' : ''}}"/>
-          <text tt:if="{{showNumbers}}" class="piece-number">{{item.id + 1}}</text>
-        </view>
+        class="puzzle-piece {{item.selected ? 'piece-selected' : ''}} {{item.correct ? 'piece-correct' : ''}} {{item.dragging ? 'piece-dragging' : ''}}"
+        style="width:{{pieceSize}}px; height:{{pieceSizeH}}px; left:{{item.col * pieceSize}}px; top:{{item.row * pieceSizeH}}px; z-index:{{item.dragging ? 100 : (item.correct ? 1 : 2)}}; transform:{{item.dragging ? ('translate(' + item.dragDeltaX + 'px,' + item.dragDeltaY + 'px) scale(1.08)') : 'none'}}; overflow:hidden; position:absolute;"
+        catchtouchstart="onPieceTouchStart"
+        catchtouchmove="onPieceTouchMove"
+        catchtouchend="onPieceTouchEnd"
+        bindlongpress="onPieceLongPress"
+        data-id="{{item.id}}"
+      >
+        <!-- 用 image 标签负偏移实现切片裁剪 -->
+        <image
+          src="{{currentImage}}"
+          style="width:{{boardSize}}px; height:{{boardHeight}}px; position:absolute; left:-{{item.correctCol * pieceSize}}px; top:-{{item.correctRow * pieceSizeH}}px; pointer-events:none;"
+          mode="scaleToFill"
+        />
+        <view class="piece-border {{item.correct ? 'border-correct' : ''}}"/>
+        <text tt:if="{{showNumbers}}" class="piece-number">{{item.id + 1}}</text>
+      </view>
       </block>
     </view>
   </view>
@@ -77,8 +88,7 @@
           <text class="stat-value">{{totalScore}}</text>
           <text class="stat-label">总积分</text>
         </view>
-        <view class="stat-divider"/>
-        <view class="stat-item">
+        <view class="stat-divider"/>        <view class="stat-item">
           <text class="stat-value">{{timeStr}}</text>
           <text class="stat-label">用时</text>
         </view>
