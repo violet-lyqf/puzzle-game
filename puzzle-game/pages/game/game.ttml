@@ -1,4 +1,4 @@
-<view class="game-container">
+﻿<view class="game-container">
 
   <!-- 顶部信息栏 -->
   <view class="top-bar">
@@ -20,14 +20,14 @@
       <text class="timer-text">{{timeStr}}</text>
     </view>
     <view class="moves-box">
-      <text class="moves-icon">🔀</text>
+      <text class="moves-icon">👣</text>
       <text class="moves-text">{{moves}} 步</text>
     </view>
-    <button class="btn-shuffle" bindtap="shufflePieces">🔀 重排</button>
+    <button class="btn-shuffle" bindtap="shufflePieces">重排</button>
     <button class="btn-preview" bindtap="togglePreview">👁 预览</button>
   </view>
 
-  <!-- 参考图预览（弹层） -->
+  <!-- 参考图预览弹层 -->
   <view class="preview-modal {{showPreview ? 'show' : ''}}" bindtap="togglePreview">
     <view class="preview-box" catchtap="preventClose">
       <text class="preview-title">参考图</text>
@@ -38,14 +38,13 @@
 
   <!-- 拼图棋盘 -->
   <view class="board-wrapper">
-    <view
-      class="puzzle-board"
-      style="width:{{boardSize}}px; height:{{boardSize}}px;"
+    <view class="puzzle-board"
+    style="width:{{boardSize}}px; height:{{boardHeight}}px;"
     >
-      <block tt:for="{{pieces}}" tt:key="id">
-        <view
-          class="puzzle-piece {{item.selected ? 'piece-selected' : ''}} {{item.correct ? 'piece-correct' : ''}}"
-          style="width:{{pieceSize}}px; height:{{pieceSize}}px; left:{{item.col * pieceSize}}px; top:{{item.row * pieceSize}}px; background-image:url('{{currentImage}}'); background-size:{{boardSize}}px {{boardSize}}px; background-position:-{{item.correctCol * pieceSize}}px -{{item.correctRow * pieceSize}}px;"
+    <block tt:for="{{pieces}}" tt:key="id">
+      <view
+        class="puzzle-piece {{item.selected ? 'piece-selected' : ''}} {{item.correct ? 'piece-correct' : ''}}"
+        style="width:{{pieceSize}}px; height:{{pieceSizeH}}px; left:{{item.col * pieceSize}}px; top:{{item.row * pieceSizeH}}px; background-image:url('{{currentImage}}'); background-size:{{boardSize}}px {{boardHeight}}px; background-position:-{{item.correctCol * pieceSize}}px -{{item.correctRow * pieceSizeH}}px;"
           bindtap="onPieceTap"
           data-id="{{item.id}}"
         >

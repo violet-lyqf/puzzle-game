@@ -1,11 +1,13 @@
-Page({
+﻿Page({
   data: {
     level: 1,
     totalScore: 0,
     currentImage: '',
     pieces: [],
     boardSize: 300,
+    boardHeight: 400,
     pieceSize: 100,
+    pieceSizeH: 133,
     cols: 3,
     rows: 3,
     selectedId: -1,
@@ -24,24 +26,26 @@ Page({
     const sysInfo = tt.getSystemInfoSync();
     const screenWidth = sysInfo.windowWidth;
     const boardSize = Math.floor(screenWidth * 0.92);
-
+    const boardHeight = Math.floor(boardSize * 4 / 3);
     const level = pd.currentLevel;
     let cols = 3;
     if (level >= 4 && level <= 6) cols = 4;
     if (level >= 7) cols = 5;
-
+    const rows = Math.round(cols * 4 / 3);
     const pieceSize = Math.floor(boardSize / cols);
+    const pieceSizeH = Math.floor(boardHeight / rows);
     const actualBoardSize = pieceSize * cols;
-
+    const actualBoardHeight = pieceSizeH * rows;
     this.setData({
       level,
       totalScore: pd.totalScore,
       boardSize: actualBoardSize,
+      boardHeight: actualBoardHeight,
       pieceSize,
+      pieceSizeH,
       cols,
-      rows: cols
+      rows
     });
-
     this.loadImage();
   },
 
@@ -51,11 +55,9 @@ Page({
 
   loadImage() {
     const pd = tt._puzzleData;
-    // 每次加载关卡都随机生成一张新的怀旧图片
     const imageUrl = pd.getRandomRetroImage();
     pd.currentImage = imageUrl;
-    // 预加载图片，加载成功后再初始化拼图
-    tt.showLoading({ title: '图片加载中...' });
+    tt.showLoading({ title: '图片生成中...' });
     tt.getImageInfo({
       src: imageUrl,
       success: () => {
@@ -65,9 +67,8 @@ Page({
         });
       },
       fail: () => {
-        // 加载失败则重新生成一张
         tt.hideLoading();
-        const fallbackUrl = pd.getRandomRetroImage();
+        const fallbackUrl = pd.getFallbackImage ? pd.getFallbackImage() : pd.getRandomRetroImage();
         pd.currentImage = fallbackUrl;
         this.setData({ currentImage: fallbackUrl }, () => {
           this.initPuzzle();
@@ -77,9 +78,8 @@ Page({
   },
 
   initPuzzle() {
-    const { cols, rows } = this.data;
+    const { cols, rows, pieceSize, pieceSizeH } = this.data;
     const total = cols * rows;
-
     let pieces = [];
     for (let i = 0; i < total; i++) {
       const correctRow = Math.floor(i / cols);
@@ -91,17 +91,15 @@ Page({
         row: correctRow,
         col: correctCol,
         selected: false,
-        correct: false
+        correct: false,
+        pieceSizeH
       });
     }
-
     pieces = this.shuffleArray(pieces);
-
     for (let i = 0; i < total; i++) {
       pieces[i].row = Math.floor(i / cols);
       pieces[i].col = i % cols;
     }
-
     this.setData({
       pieces,
       selectedId: -1,
@@ -110,7 +108,6 @@ Page({
       timeStr: '00:00',
       showSuccess: false
     });
-
     this.stopTimer();
     this.startTimer();
   },
@@ -156,12 +153,8 @@ Page({
     if (this.data.showSuccess) return;
     const tappedId = parseInt(e.currentTarget.dataset.id);
     const { selectedId, pieces } = this.data;
-
     if (selectedId === -1) {
-      const newPieces = pieces.map(p => ({
-        ...p,
-        selected: p.id === tappedId
-      }));
+      const newPieces = pieces.map(p => ({ ...p, selected: p.id === tappedId }));
       this.setData({ pieces: newPieces, selectedId: tappedId });
     } else if (selectedId === tappedId) {
       const newPieces = pieces.map(p => ({ ...p, selected: false }));
@@ -175,23 +168,19 @@ Page({
     let pieces = this.data.pieces.map(p => ({ ...p }));
     const a = pieces.find(p => p.id === idA);
     const b = pieces.find(p => p.id === idB);
-
     const tmpRow = a.row;
     const tmpCol = a.col;
     a.row = b.row;
     a.col = b.col;
     b.row = tmpRow;
     b.col = tmpCol;
-
     pieces = pieces.map(p => ({
       ...p,
       selected: false,
       correct: p.row === p.correctRow && p.col === p.correctCol
     }));
-
     const moves = this.data.moves + 1;
     this.setData({ pieces, selectedId: -1, moves });
-
     if (pieces.every(p => p.correct)) {
       this.onPuzzleComplete();
     }
@@ -205,35 +194,31 @@ Page({
     pd.totalScore = newScore;
     pd.currentLevel = newLevel;
     pd.save();
-
-    this.setData({
-      totalScore: newScore,
-      showSuccess: true
-    });
-
+    this.setData({ totalScore: newScore, showSuccess: true });
     tt.vibrateShort();
   },
 
   nextLevel() {
     const pd = tt._puzzleData;
     const level = pd.currentLevel;
-
     let cols = 3;
     if (level >= 4 && level <= 6) cols = 4;
     if (level >= 7) cols = 5;
-
+    const rows = Math.round(cols * 4 / 3);
     const pieceSize = Math.floor(this.data.boardSize / cols);
+    const pieceSizeH = Math.floor(this.data.boardHeight / rows);
     const actualBoardSize = pieceSize * cols;
-
+    const actualBoardHeight = pieceSizeH * rows;
     this.setData({
       level,
       cols,
-      rows: cols,
+      rows,
       pieceSize,
+      pieceSizeH,
       boardSize: actualBoardSize,
+      boardHeight: actualBoardHeight,
       showSuccess: false
     }, () => {
-      // 下一关随机加载新的怀旧图片
       this.loadImage();
     });
   },

@@ -1,4 +1,4 @@
-Page({
+﻿Page({
   data: {
     totalScore: 0,
     currentLevel: 1,
@@ -23,8 +23,8 @@ Page({
   showScore() {
     const { totalScore, currentLevel } = tt._puzzleData;
     tt.showModal({
-      title: '🏆 积分详情',
-      content: `总积分：${totalScore} 分\n已完成关卡：${currentLevel - 1} 关\n每关奖励：10 分`,
+      title: '积分详情',
+      content: '总积分：' + totalScore + ' 分\n已完成关卡：' + (currentLevel - 1) + ' 关\n每关奖励：10 分',
       showCancel: false,
       confirmText: '太棒了'
     });
@@ -32,7 +32,7 @@ Page({
 
   resetGame() {
     tt.showModal({
-      title: '⚠️ 确认重置',
+      title: '确认重置',
       content: '重置后积分和关卡进度将清零，确定吗？',
       confirmText: '确定重置',
       cancelText: '取消',

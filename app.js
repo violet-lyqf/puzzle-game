@@ -1,73 +1,61 @@
-// 治愈系田园农村怀旧风格图片关键词（符合8090后童年记忆）
-const RETRO_KEYWORDS = [
-  // 田园自然风光
-  'countryside', 'farmland', 'rice-field', 'wheat-field', 'sunflower-field',
-  'rural-path', 'village-road', 'dirt-road', 'old-bridge', 'stone-bridge',
-  'river-village', 'mountain-village', 'misty-village', 'foggy-countryside', 'dawn-farm',
+﻿// 中国北方80年代农村田园生活 - 精选图片库
+// 使用 picsum.photos 稳定图片服务（完全免费，无需API）
+// 精选适合拼图的高质量风景、田园、农村类图片
 
-  // 农村建筑与场景
-  'old-farmhouse', 'mud-house', 'tiled-roof', 'wooden-house', 'barn',
-  'old-well', 'water-wheel', 'windmill', 'old-fence', 'straw-stack',
-  'village-alley', 'old-courtyard', 'ancient-village', 'rural-house', 'country-gate',
-
-  // 农耕与劳作
-  'farmer-field', 'ox-plow', 'rice-harvest', 'corn-harvest', 'vegetable-garden',
-  'lotus-pond', 'fishing-village', 'country-market', 'bamboo-forest', 'tea-plantation',
-
-  // 童年记忆场景
-  'country-school', 'old-classroom', 'childhood-village', 'rural-playground', 'kite-field',
-  'firefly-night', 'summer-pond', 'autumn-harvest', 'spring-blossom', 'winter-snow-village',
-
-  // 治愈系自然
-  'morning-dew', 'golden-sunset-farm', 'green-hills', 'babbling-brook', 'wildflowers',
-  'cherry-blossom-village', 'maple-countryside', 'lavender-field', 'misty-morning', 'rainbow-farm'
+// 精选图片ID列表（picsum.photos 农村/自然/田园风光）
+const RURAL_IMAGE_IDS = [
+  // 田野麦田类
+  15, 16, 17, 18, 19, 20,
+  // 自然风光类
+  28, 29, 30, 37, 39, 40,
+  // 山村田园类
+  42, 43, 45, 47, 50, 51,
+  // 河流湖泊类
+  52, 53, 54, 55, 56, 57,
+  // 森林草地类
+  63, 64, 65, 75, 76, 77,
+  // 日出日落类
+  82, 83, 84, 85, 86, 87
 ];
 
-// 生成随机怀旧图片 URL（使用 picsum + unsplash 双源）
 function getRandomRetroImage() {
-  const seed = RETRO_KEYWORDS[Math.floor(Math.random() * RETRO_KEYWORDS.length)];
-  const random = Math.floor(Math.random() * 1000);
-  // 使用 picsum.photos 随机怀旧风格图片
-  return `https://picsum.photos/seed/${seed}${random}/600/600`;
+  const id = RURAL_IMAGE_IDS[Math.floor(Math.random() * RURAL_IMAGE_IDS.length)];
+  const t = Date.now();
+  return 'https://picsum.photos/id/' + id + '/600/800?t=' + t;
 }
 
-// 预生成8张不重复的怀旧图片
+function getFallbackImage() {
+  const id = RURAL_IMAGE_IDS[Math.floor(Math.random() * RURAL_IMAGE_IDS.length)];
+  return 'https://picsum.photos/id/' + id + '/600/800';
+}
+
 function generateRetroImages(count) {
-  const images = [];
-  const usedSeeds = new Set();
-  while (images.length < count) {
-    const seed = RETRO_KEYWORDS[Math.floor(Math.random() * RETRO_KEYWORDS.length)];
-    const random = Math.floor(Math.random() * 9999);
-    const key = `${seed}${random}`;
-    if (!usedSeeds.has(key)) {
-      usedSeeds.add(key);
-      images.push(`https://picsum.photos/seed/${key}/600/600`);
-    }
-  }
-  return images;
+  const shuffled = [...RURAL_IMAGE_IDS].sort(() => Math.random() - 0.5);
+  return shuffled.slice(0, Math.min(count, shuffled.length)).map(function(id) {
+    return 'https://picsum.photos/id/' + id + '/600/800';
+  });
 }
 
-// 全局共享对象，挂载到 tt 上避免 getApp 问题
 tt._puzzleData = {
   totalScore: 0,
   currentLevel: 1,
   currentImage: '',
   images: generateRetroImages(8),
-  getRandomRetroImage,
-  generateRetroImages,
-  save() {
+  getRandomRetroImage: getRandomRetroImage,
+  getFallbackImage: getFallbackImage,
+  generateRetroImages: generateRetroImages,
+  save: function() {
     tt.setStorageSync('totalScore', tt._puzzleData.totalScore);
     tt.setStorageSync('currentLevel', tt._puzzleData.currentLevel);
   }
 };
 
 App({
-  onLaunch() {
+  onLaunch: function() {
     const score = tt.getStorageSync('totalScore') || 0;
     const level = tt.getStorageSync('currentLevel') || 1;
     tt._puzzleData.totalScore = score;
     tt._puzzleData.currentLevel = level;
-    // 启动时预生成图片列表
     tt._puzzleData.images = generateRetroImages(8);
   }
 });
