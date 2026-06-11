@@ -46,7 +46,7 @@
     <block tt:for="{{pieces}}" tt:key="id">
       <view
         class="puzzle-piece {{item.selected ? 'piece-selected' : ''}} {{item.correct ? 'piece-correct' : ''}} {{item.dragging ? 'piece-dragging' : ''}}"
-        style="width:{{pieceSize}}px; height:{{pieceSizeH}}px; left:{{item.col * pieceSize}}px; top:{{item.row * pieceSizeH}}px; z-index:{{item.dragging ? 100 : (item.correct ? 1 : 2)}}; transform:{{item.dragging ? ('translate(' + item.dragDeltaX + 'px,' + item.dragDeltaY + 'px) scale(1.08)') : 'none'}}; overflow:hidden; position:absolute;"
+        style="width:{{pieceSize}}px; height:{{pieceSizeH}}px; left:{{item.col * pieceSize}}px; top:{{item.row * pieceSizeH}}px; z-index:{{item.zIndex}}; transform:{{item.transformStr}};"
         catchtouchstart="onPieceTouchStart"
         catchtouchmove="onPieceTouchMove"
         catchtouchend="onPieceTouchEnd"

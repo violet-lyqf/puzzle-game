@@ -136,6 +136,7 @@
       pieces[i].row = Math.floor(i / cols);
       pieces[i].col = i % cols;
     }
+    pieces = this.precomputePieces(pieces);
     this.setData({
       pieces,
       selectedId: -1,
@@ -268,10 +269,11 @@
     const deltaX = clampedX - draggingPiece.col * pieceSize;
     const deltaY = clampedY - draggingPiece.row * pieceSizeH;
 
-    const newPieces = pieces.map(p => {
+    let newPieces = pieces.map(p => {
       if (!draggingGroupIds.includes(p.id)) return p;
       return { ...p, dragDeltaX: deltaX, dragDeltaY: deltaY };
     });
+    newPieces = this.precomputePieces(newPieces);
     this.setData({ pieces: newPieces, dragX: clampedX, dragY: clampedY });
   },
 
@@ -356,10 +358,22 @@
 
     // 移动后重新合并连接组
     newPieces = this.mergeGroups(newPieces);
+    newPieces = this.precomputePieces(newPieces);
 
     const moves = this.data.moves + 1;
     this.setData({ pieces: newPieces, draggingId: -1, draggingGroupIds: [], dragX: 0, dragY: 0, moves });
     if (newPieces.every(p => p.correct)) this.onPuzzleComplete();
+  },
+
+  // ─── 预计算渲染属性，减少模板计算开销 ──────────────────────────────────
+  precomputePieces(pieces) {
+    return pieces.map(p => ({
+      ...p,
+      zIndex: p.dragging ? 100 : (p.correct ? 1 : 2),
+      transformStr: (p.dragging && (p.dragDeltaX || p.dragDeltaY))
+        ? 'translate(' + p.dragDeltaX + 'px,' + p.dragDeltaY + 'px) scale(1.08)'
+        : 'none'
+    }));
   },
 
   // ─── 并查集：合并连接组 ─────────────────────────────────────────────────
@@ -421,6 +435,7 @@
     }));
     // 交换后重新合并连接组
     pieces = this.mergeGroups(pieces);
+    pieces = this.precomputePieces(pieces);
     const moves = this.data.moves + 1;
     this.setData({ pieces, selectedId: -1, moves });
     if (pieces.every(p => p.correct)) {

@@ -1,41 +1,34 @@
 ﻿<view class="container">
-  <view class="bg-circle bg-circle-1"/>
-  <view class="bg-circle bg-circle-2"/>
   <view class="header">
     <text class="title">🧩 拼图大挑战</text>
     <text class="subtitle">考验你的空间想象力</text>
   </view>
   <view class="score-card">
     <view class="score-item">
-      <text class="score-icon">🏆</text>
       <text class="score-value">{{totalScore}}</text>
       <text class="score-label">总积分</text>
     </view>
     <view class="score-divider"/>
     <view class="score-item">
-      <text class="score-icon">🎯</text>
       <text class="score-value">{{currentLevel}}</text>
       <text class="score-label">当前关卡</text>
     </view>
     <view class="score-divider"/>
     <view class="score-item">
-      <text class="score-icon">✅</text>
       <text class="score-value">{{passedLevel}}</text>
       <text class="score-label">已过关卡</text>
     </view>
   </view>
   <view class="btn-group">
-    <button class="btn-start" bindtap="startGame">🎮 开始游戏</button>
-    <button class="btn-score" bindtap="showScore">🏅 积分详情</button>
-    <button class="btn-reset" bindtap="resetGame">🔄 重置进度</button>
+    <button class="btn-start" bindtap="startGame">开始游戏</button>
+    <button class="btn-score" bindtap="showScore">积分详情</button>
+    <button class="btn-reset" bindtap="resetGame">重置进度</button>
   </view>
   <view class="tips-card">
-    <text class="tips-title">📖 游戏说明</text>
-    <view class="tips-list">
-      <text class="tips-item">👆 点击选中一个切片</text>
-      <text class="tips-item">👆 再点击另一个切片交换位置</text>
-      <text class="tips-item">🎉 拼出完整图片即可过关</text>
-      <text class="tips-item">⭐ 每过一关获得 10 积分</text>
-    </view>
+    <text class="tips-title">游戏说明</text>
+    <text class="tips-item">👆 点击选中切片，再点另一块交换</text>
+    <text class="tips-item">✋ 长按拖动切片移动位置</text>
+    <text class="tips-item">🔗 拼好的切片可整体移动</text>
+    <text class="tips-item">⭐ 每过一关获得 10 积分</text>
   </view>
 </view>
