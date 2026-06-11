@@ -55,11 +55,28 @@ Page({
 
   loadImage() {
     const pd = tt._puzzleData;
-    const images = pd.images;
-    const idx = (pd.currentLevel - 1) % images.length;
-    const imageUrl = images[idx];
-    this.setData({ currentImage: imageUrl }, () => {
-      this.initPuzzle();
+    // 每次加载关卡都随机生成一张新的怀旧图片
+    const imageUrl = pd.getRandomRetroImage();
+    pd.currentImage = imageUrl;
+    // 预加载图片，加载成功后再初始化拼图
+    tt.showLoading({ title: '图片加载中...' });
+    tt.getImageInfo({
+      src: imageUrl,
+      success: () => {
+        tt.hideLoading();
+        this.setData({ currentImage: imageUrl }, () => {
+          this.initPuzzle();
+        });
+      },
+      fail: () => {
+        // 加载失败则重新生成一张
+        tt.hideLoading();
+        const fallbackUrl = pd.getRandomRetroImage();
+        pd.currentImage = fallbackUrl;
+        this.setData({ currentImage: fallbackUrl }, () => {
+          this.initPuzzle();
+        });
+      }
     });
   },
 
@@ -222,10 +239,7 @@ Page({
   nextLevel() {
     const pd = tt._puzzleData;
     const level = pd.currentLevel;
-    const images = pd.images;
-    const idx = (level - 1) % images.length;
 
-    // 根据新关卡更新难度
     let cols = 3;
     if (level >= 4 && level <= 6) cols = 4;
     if (level >= 7) cols = 5;
@@ -239,10 +253,10 @@ Page({
       rows: cols,
       pieceSize,
       boardSize: actualBoardSize,
-      currentImage: images[idx],
       showSuccess: false
     }, () => {
-      this.initPuzzle();
+      // 下一关随机加载新的怀旧图片
+      this.loadImage();
     });
   },
 
